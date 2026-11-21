@@ -5,3 +5,6 @@ rebuild
 kernel_bin.h
 initramfs_bin.h
 .idea/
+downloads/
+*.img
+kernel.stamp

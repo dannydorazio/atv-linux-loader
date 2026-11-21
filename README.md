@@ -26,7 +26,24 @@ over to (or directly install it to) either a USB flash drive or IDE hard drive.
 reconnect it.
 
 ### Build `linux-loader-appletv`
+#### Docker (macOS or Linux)
+* Install Docker (Docker Desktop, OrbStack, etc.)
+* Clone this repo and `cd` into it
+* Type `./docker-make.sh KERNEL=/path/to/vmlinuz INITRAMFS=/path/to/initrd`. The first run builds a container with
+Clang and cctools-port, which takes a few minutes.
+
+`./docker-make.sh` runs `make` in the container, so the other targets work through it too. `usb-image` builds
+`atv-usb.img`, a complete bootable disk image containing the boot partition (`boot.efi` and `Dummy.kext` are downloaded
+for you). Set the kernel command line with `KERNEL_FLAGS="..."`, then write the image to a USB drive (`diskutil list` on
+macOS to find it, `/dev/sdX` on Linux):
+```
+./docker-make.sh KERNEL=/path/to/vmlinuz INITRAMFS=/path/to/initrd usb-image KERNEL_FLAGS="root=UUID=... ro"
+sudo dd if=atv-usb.img of=/dev/rdiskN bs=4m
+```
+
 #### macOS
+**Note: current Xcode versions refuse to link i386 (`ld: linking for i386 is no longer supported`). If you get this
+error, use Docker instead.**
 * Install the Xcode CLI tools: `xcode-select --install`
 * Clone this repo and `cd` into it
 * Type `make KERNEL=/path/to/vmlinuz INITRAMFS=/path/to/initrd`, using the paths to the Linux kernel and initramfs from
